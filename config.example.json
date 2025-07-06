@@ -1,0 +1,63 @@
+{
+    "audio": {
+        "file": "assets/heat_abnormal.wav",
+        "bpm": 179.0,
+        "beats_per_measure": 4,
+        "start_offset": 0.0,
+        "volume": 1.0
+    },
+    "animation": {
+        "bpm": 1432.0,
+        "subdivisions": 8,
+        "canvas_width": 80,
+        "canvas_height": 24,
+        "layers": 5,
+        "target_fps": 60
+    },
+    "timing": {
+        "beat_offset": 0,
+        "time_offset": 0.0,
+        "sync_adjustment": 0.0
+    },
+    "visual": {
+        "color_scheme": "default",
+        "enable_effects": true,
+        "effect_intensity": 1.0,
+        "enable_debug": false
+    },
+    "controls": {
+        "enable_keyboard": true,
+        "skip_duration": 10.0,
+        "auto_start": false
+    },
+    "scenes": {
+        "intro_start": 10,
+        "verse1_start": 120,
+        "chorus_start": 240,
+        "breakdown_start": 360,
+        "bridge_start": 480,
+        "outro_start": 600,
+        "end_time": 800
+    },
+    "effects": {
+        "typewriter_speed": 1.0,
+        "noise_intensity": 5,
+        "glitch_intensity": 20,
+        "wave_amplitude": 5,
+        "wave_frequency": 0.1,
+        "pulse_rate": 2
+    },
+    "colors": {
+        "ocean": "blue",
+        "text": "white",
+        "breakdown": "red",
+        "outro": "cyan",
+        "debug": "yellow"
+    },
+    "lyrics": {
+        "enable_typewriter": true,
+        "typewriter_delay": 0.1,
+        "enable_cursor": true,
+        "cursor_blink_rate": 2
+    }
+} 
