@@ -2,6 +2,9 @@ import random
 from colorama import Fore, Style
 from src.engine.dat import Vector2
 
+def clear(c, layer):
+    c.clear_layer(layer)
+
 def type_text(c, generator, layer, x, y, col, render=True):
     # pop a char off the manager's text if there is one
     text_get = generator.get_data("text")
@@ -37,6 +40,13 @@ def type_text(c, generator, layer, x, y, col, render=True):
                         )
 
             generator.oper_data("offset", lambda t: t + 1 + add_offset)
+
+
+def set_multiline_string(c, layer, x, y, string, col):
+    for offset, line in enumerate(string.split("\n")):
+        c.set_string(
+            layer, Vector2(x, y + offset), line, col
+        ),
 
 def debug_info(c, g, b, frames):
     c.set_string(
