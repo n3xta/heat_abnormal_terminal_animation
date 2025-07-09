@@ -1,54 +1,92 @@
+from src.string_defs import data_strings
 
-import time, sys
-from colorama import init, Fore, Style
-from engine.classes import Canvas
-from engine.dat import Vector2
-import animator as am           # 你的完整版 animator.py
-from animator_functions import type_text, blink
-from string_defs import text_hello
+lyrics = [
+    data_strings["testing_1"],
+    data_strings["testing_2"],
+    data_strings["testing_3"],
+    data_strings["testing_4"],
+    data_strings["testing_5"],
+    data_strings["testing_7"],
+    data_strings["testing_8"],
+    data_strings["testing_9"],
+    data_strings["testing_10"],
+    data_strings["testing_11"],
+    data_strings["testing_12"],
+    data_strings["testing_13"],
+    data_strings["testing_14"],
+]
 
-init()                           # colorama 初始化 (Win 也能彩色)
+from colorama import Fore, Style
+from src.engine.classes import Canvas
+from src.engine.dat import Vector2
+import src.animator as am
+from src.animator_functions import typewrite_by_word, write_history
 
-# 1. 创建 Canvas (40×12 逻辑像素)
-canvas = Canvas(Vector2(40, 12), 1, ())
+# 1) 建画布
+canvas = Canvas(Vector2(40, 24), num_layers=1, merge_rules=())
 
-# 2. 定义一个 Scene，里面放两个 Generator
-hello_scene = am.Scene(
-    "hello",
+# 2) 定义 Scene
+lyrics_scene = am.Scene(
+    "lyrics",
     (
-        # G0: 打字机 (每帧执行，直到写完)
+        # G0: 打字机——每帧跑一次
         am.Generator(
-            start_beat = 0,
-            condition  = am.Generator.always(),
-            on_create  = lambda g: g.set_data("text", text_hello, "offset", 0),
-            request    = lambda g, b: type_text(canvas, g, 0, Vector2(2, 2), Fore.CYAN+Style.BRIGHT),
-            request_clear = am.Generator.no_request()
+            0, am.Generator.always(),
+            lambda g: g.set_data(
+                "text",  lyrics,      # 歌词模板
+                "offset", 0,          # 当前单词索引
+                "lineno", 0,          # 当前行索引
+                "type_col", Fore.YELLOW + Style.BRIGHT
+            ),
+            lambda g, b: typewrite_by_word(
+                canvas, g,
+                layer = 0,
+                x = 2, y = 20,         # 打字机起始坐标（行数倒着往上滚）
+                col = g.get_data("type_col")
+            ),
+            am.Generator.no_request()
         ),
-        # G1: 左上角闪烁
+
+        # G1: history ——把已经打完的行推到屏幕上方
         am.Generator(
-            start_beat = 0,
-            condition  = am.Generator.always(),
-            on_create  = am.Generator.no_create(),
-            request    = lambda g, b: blink(canvas, 0, Vector2(0,0), Fore.YELLOW, Fore.RED, b),
-            request_clear = am.Generator.no_request()
+            0, am.Generator.always(),
+            am.Generator.no_create(),
+            lambda g, b: write_history(
+                canvas, g,
+                layer = 0,
+                x = 2, y = 18,         # history 最底部行
+                col = g.get_data("type_col"),
+                stop = 2               # history 顶端行
+            ),
+            am.Generator.no_request()
         ),
     )
 )
 
-# 3. 场景管理器：只有这一幕
-controller = am.SceneManager((hello_scene,), ())
-controller.start_scene("hello")
+# src/main.py (继续往下写)
 
-# 4. 主循环：每 0.1 秒推进一拍
-delay = 0.1         # 10 FPS / 0.1s per beat
-beat  = 0
+import time, sys
+from colorama import init
+
+init(autoreset=False)
+
+# -------------------- 场景管理 --------------------
+controller = am.SceneManager((lyrics_scene,), ())
+controller.start_scene("lyrics")
+
+# -------------------- 清屏 & 隐光标 ----------------
+print("\033[?1049h\033[?25l\033[2J\033[1;1H", end="")
+
+# -------------------- 主循环 ----------------------
 try:
+    fps = 15
+    delay = 1 / fps
     while True:
         controller.request_next(render=True)
         canvas.render_all()
-
-        beat += 1
         time.sleep(delay)
 except KeyboardInterrupt:
-    print(Style.RESET_ALL)
-    sys.exit()
+    pass
+finally:
+    print("\033[?1049l\033[?25h", end="")   # 恢复屏幕 & 光标
+    sys.stdout.flush()

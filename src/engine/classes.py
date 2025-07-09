@@ -4,7 +4,7 @@ import os
 from platform import system as system_type
 from bisect import insort_right, bisect_right
 
-from engine.dat import Vector2
+from src.engine.dat import Vector2
 
 
 class RenderSection:
