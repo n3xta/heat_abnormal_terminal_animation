@@ -5,6 +5,13 @@ from src.engine.dat import Vector2
 def clear(c, layer):
     c.clear_layer(layer)
 
+def noise(c, layer, amount, chars, colours):
+    for n in range(amount):
+        location = Vector2(random.randint(0, c.dimensions.x - 1), random.randint(0, c.dimensions.y - 1))
+        c.set_char(
+            layer, location, random.choice(chars), random.choice(colours)
+        )
+
 def type_text(c, generator, layer, x, y, col, render=True):
     # pop a char off the manager's text if there is one
     text_get = generator.get_data("text")

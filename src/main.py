@@ -1,7 +1,7 @@
 import time
 from just_playback import Playback
 from src.animator_scenes import all_scenes, canvas, lyrics_keys
-import src.animator as am
+import src.animator as heat
 from src.string_defs import data_strings
 from src.animator_functions import debug_info
 
@@ -24,31 +24,32 @@ event_16_time = 128
 event_12_time = 96
 event_4_time = 32
 
-controller = am.SceneManager(all_scenes, (
+controller = heat.SceneManager(all_scenes, (
     # buildup
-    am.Event(0, am.Event.swap_scene("lyric_buildup_1")),
-    am.Event(event_16_time * 1 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 1, am.Event.swap_scene("lyric_buildup_2")),
-    am.Event(event_16_time * 2 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 2, am.Event.swap_scene("lyric_buildup_3")),
-    am.Event(event_16_time * 3 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 3, am.Event.swap_scene("lyric_buildup_4")),
-    am.Event(event_16_time * 4 - 1, am.Event.swap_scene("clear")),
+    heat.Event(0, heat.Event.swap_scene("clear")),
+    heat.Event(1, heat.Event.swap_scene("lyric_buildup_1")),
+    heat.Event(event_16_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 1, heat.Event.swap_scene("lyric_buildup_2")),
+    heat.Event(event_16_time * 2 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 2, heat.Event.swap_scene("lyric_buildup_3")),
+    heat.Event(event_16_time * 3 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 3, heat.Event.swap_scene("lyric_buildup_4")),
+    heat.Event(event_16_time * 4 - 1, heat.Event.swap_scene("clear")),
     
     # Climax 1
-    am.Event(event_16_time * 4, am.Event.swap_scene("lyric_climax_1")),
-    am.Event(event_16_time * 5 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 5, am.Event.swap_scene("lyric_repeat_1")),
-    am.Event(event_16_time * 5 + event_12_time * 1 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 5 + event_12_time * 1, am.Event.swap_scene("lyric_climax_2")),
-    am.Event(event_16_time * 5 + event_12_time * 1 + event_4_time * 1 - 1, am.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 4, heat.Event.swap_scene("lyric_climax_1")),
+    heat.Event(event_16_time * 5 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 5, heat.Event.swap_scene("lyric_repeat_1")),
+    heat.Event(event_16_time * 5 + event_12_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 5 + event_12_time * 1, heat.Event.swap_scene("lyric_climax_2")),
+    heat.Event(event_16_time * 5 + event_12_time * 1 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
 
     # Climax 2
-    am.Event(event_16_time * 5 + event_12_time * 1 + event_4_time * 1, am.Event.swap_scene("lyric_climax_3")),
-    am.Event(event_16_time * 6 + event_12_time * 1 + event_4_time * 1 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 6 + event_12_time * 1 + event_4_time * 1, am.Event.swap_scene("lyric_repeat_2")),
-    am.Event(event_16_time * 6 + event_12_time * 2 + event_4_time * 1 - 1, am.Event.swap_scene("clear")),
-    am.Event(event_16_time * 6 + event_12_time * 2 + event_4_time * 1, am.Event.swap_scene("lyric_climax_4")),
+    heat.Event(event_16_time * 5 + event_12_time * 1 + event_4_time * 1, heat.Event.swap_scene("lyric_climax_3")),
+    heat.Event(event_16_time * 6 + event_12_time * 1 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 6 + event_12_time * 1 + event_4_time * 1, heat.Event.swap_scene("lyric_repeat_2")),
+    heat.Event(event_16_time * 6 + event_12_time * 2 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(event_16_time * 6 + event_12_time * 2 + event_4_time * 1, heat.Event.swap_scene("lyric_climax_4")),
 ))
 
 while playback.active:
