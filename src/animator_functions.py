@@ -12,6 +12,148 @@ def noise(c, layer, amount, chars, colours):
             layer, location, random.choice(chars), random.choice(colours)
         )
 
+def cluster_noise(c, layer, num_clusters, points_per_cluster, spread, chars, colours):
+    """
+    Creates tight clusters of noise characters on the screen.
+    
+    Args:
+        c: Canvas to draw on
+        layer: Layer to draw on
+        num_clusters: Number of cluster centers
+        points_per_cluster: How many points to generate around each cluster
+        spread: Maximum distance from cluster centers (1 = very tight, 2 = loose)
+        chars: List of characters to choose from
+        colours: List of colors to choose from
+    """
+    # Generate cluster centers with better spacing
+    centers = []
+    for _ in range(num_clusters):
+        center_x = random.randint(spread + 2, c.dimensions.x - spread - 3)
+        center_y = random.randint(spread + 2, c.dimensions.y - spread - 3)
+        centers.append((center_x, center_y))
+    
+    # Generate points around each center with tighter distribution
+    for center_x, center_y in centers:
+        for _ in range(points_per_cluster):
+            # For very tight clusters, bias towards center positions
+            if spread == 1:
+                # 70% chance for center or immediately adjacent (8 directions)
+                if random.random() < 0.7:
+                    offsets = [(0,0), (-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+                    x_offset, y_offset = random.choice(offsets)
+                else:
+                    # 30% chance for slightly further (still within spread=1)
+                    x_offset = random.randint(-1, 1)
+                    y_offset = random.randint(-1, 1)
+            else:
+                # For larger spreads, use uniform distribution but weighted towards center
+                if random.random() < 0.5:
+                    # 50% chance for positions closer to center
+                    max_offset = max(1, spread // 2)
+                    x_offset = random.randint(-max_offset, max_offset)
+                    y_offset = random.randint(-max_offset, max_offset)
+                else:
+                    # 50% chance for full spread
+                    x_offset = random.randint(-spread, spread)
+                    y_offset = random.randint(-spread, spread)
+            
+            x = center_x + x_offset
+            y = center_y + y_offset
+            
+            # Ensure points stay within canvas bounds
+            x = max(0, min(x, c.dimensions.x - 1))
+            y = max(0, min(y, c.dimensions.y - 1))
+            
+            location = Vector2(x, y)
+            c.set_char(
+                layer, location, random.choice(chars), random.choice(colours)
+            )
+
+
+def expanding_cluster_noise(c, layer, center_x, center_y, expansion_radius, chars, colours):
+    """
+    Adds one character per frame, expanding outward from center.
+    Call this each frame with increasing expansion_radius for expanding effect.
+    
+    Args:
+        c: Canvas to draw on
+        layer: Layer to draw on
+        center_x: X coordinate of cluster center
+        center_y: Y coordinate of cluster center  
+        expansion_radius: Current expansion radius (0=center, 1=adjacent, etc.)
+        chars: List of characters to choose from
+        colours: List of colors to choose from
+    """
+    if expansion_radius == 0:
+        # Place center point
+        location = Vector2(center_x, center_y)
+        c.set_char(layer, location, random.choice(chars), random.choice(colours))
+        return
+    
+    # Generate all possible positions at this radius
+    possible_positions = []
+    for x_offset in range(-expansion_radius, expansion_radius + 1):
+        for y_offset in range(-expansion_radius, expansion_radius + 1):
+            # Only include positions that are exactly at this distance (Manhattan or Chebyshev)
+            distance = max(abs(x_offset), abs(y_offset))  # Chebyshev distance for square expansion
+            # distance = abs(x_offset) + abs(y_offset)  # Manhattan distance for diamond expansion
+            
+            if distance == expansion_radius:
+                x = center_x + x_offset
+                y = center_y + y_offset
+                
+                # Check bounds
+                if 0 <= x < c.dimensions.x and 0 <= y < c.dimensions.y:
+                    possible_positions.append((x, y))
+    
+    # Place one random character at this expansion radius
+    if possible_positions:
+        x, y = random.choice(possible_positions)
+        location = Vector2(x, y)
+        c.set_char(layer, location, random.choice(chars), random.choice(colours))
+
+
+def cluster_expansion_single(c, layer, cluster_centers, current_radius, chars, colours):
+    """
+    Expands multiple clusters simultaneously, one character per frame total.
+    
+    Args:
+        c: Canvas to draw on
+        layer: Layer to draw on
+        cluster_centers: List of (x, y) tuples for cluster centers
+        current_radius: Current expansion radius for all clusters
+        chars: List of characters to choose from
+        colours: List of colors to choose from
+    """
+    # Collect all possible positions from all clusters at current radius
+    all_positions = []
+    
+    for center_x, center_y in cluster_centers:
+        if current_radius == 0:
+            # Center position
+            if 0 <= center_x < c.dimensions.x and 0 <= center_y < c.dimensions.y:
+                all_positions.append((center_x, center_y))
+        else:
+            # Positions at current radius
+            for x_offset in range(-current_radius, current_radius + 1):
+                for y_offset in range(-current_radius, current_radius + 1):
+                    distance = max(abs(x_offset), abs(y_offset))  # Square expansion
+                    
+                    if distance == current_radius:
+                        x = center_x + x_offset
+                        y = center_y + y_offset
+                        
+                        if 0 <= x < c.dimensions.x and 0 <= y < c.dimensions.y:
+                            all_positions.append((x, y))
+    
+    # Place one character from all possible positions
+    if all_positions:
+        x, y = random.choice(all_positions)
+        location = Vector2(x, y)
+        c.set_char(layer, location, random.choice(chars), random.choice(colours))
+
+
+
 def type_text(c, generator, layer, x, y, col, render=True):
     # pop a char off the manager's text if there is one
     text_get = generator.get_data("text")

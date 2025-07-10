@@ -1,5 +1,5 @@
 import src.animator as am
-from src.animator_functions import set_multiline_string, debug_info, clear, noise
+from src.animator_functions import set_multiline_string, debug_info, clear, noise, cluster_noise
 from src.engine.classes import Canvas
 from src.engine.dat import Vector2
 from colorama import Fore, Style
@@ -24,18 +24,61 @@ clear_scene = am.Scene(
             lambda g: clear(canvas, 0),
             am.Generator.no_request(), am.Generator.no_request()
         ),
-        am.Generator(
-           0, am.Generator.at_beat(0),
-           lambda g: noise(
-               canvas, 0, 400 * 240, ("##",), (Style.BRIGHT + Fore.WHITE,)
-           ),
-           am.Generator.no_request(), am.Generator.no_request()
-        ),
+        # am.Generator(
+        #    0, am.Generator.at_beat(0),
+        #    lambda g: noise(
+        #        canvas, 0, 400 * 240, ("##",), (Style.BRIGHT + Fore.WHITE,)
+        #    ),
+        #    am.Generator.no_request(), am.Generator.no_request()
+        # ),
 
     )
 )
 
-# 工厂函数：给一段 text 创建一个 Scene
+
+# plaao
+wipe = am.Scene(
+    "wipe",
+    (
+        am.Generator(
+            0, am.Generator.always(),
+            am.Generator.no_create(),
+            lambda g, b: noise(
+                canvas, 0, int(b ** 1.4), ("##", "@@", "  "),
+                (
+                    *((Style.BRIGHT + Fore.WHITE,) * b),
+                    *((Style.NORMAL + Fore.WHITE,) * (70 - b)),
+                    *((Style.BRIGHT + Fore.BLACK,) * 4 * (40 - b)),
+                )
+            ),
+            am.Generator.no_request()
+        ),
+    )
+)
+
+triangle = am.Scene(
+    "triangle",
+    (
+        am.Generator(
+            0, am.Generator.always(),
+            am.Generator.no_create(),
+            lambda g, b: cluster_noise(
+                canvas, 0, 1, 1, 1, ("△△", "▲"),
+                (
+                    *((Style.BRIGHT + Fore.WHITE,) * b),
+                    *((Style.NORMAL + Fore.WHITE,) * (70 - b)),
+                    *((Style.BRIGHT + Fore.BLACK,) * 4 * (40 - b)),
+                )
+            ),
+            am.Generator.no_request()
+        ),
+    )
+)
+
+###------------------###
+### DEBUGGING SCENES ###
+###------------------###
+
 def make_lyric_scene(key):
     text = data_strings[key]
     return am.Scene(
@@ -52,15 +95,16 @@ def make_lyric_scene(key):
         )
     )
 
-# 你的所有段落 key 列表
 lyrics_keys = [
     "buildup_1","buildup_2","buildup_3","buildup_4",
     "climax_1","repeat_1",
     "climax_2","climax_3","repeat_2","climax_4"
 ]
 
-# 生成所有 Scene 对象
 lyric_scenes = [ make_lyric_scene(k) for k in lyrics_keys ]
 
-# 把它们合并到 all_scenes
-all_scenes = (*lyric_scenes, counter, clear_scene)
+###--------------------------###
+### ALL SCENES FOR INJECTION ###
+###--------------------------###
+
+all_scenes = (*lyric_scenes, counter, clear_scene, wipe, triangle)

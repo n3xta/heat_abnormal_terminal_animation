@@ -1,11 +1,11 @@
 import time
 from just_playback import Playback
-from src.animator_scenes import all_scenes, canvas, lyrics_keys
+from src.animator_scenes import all_scenes, canvas
 import src.animator as heat
-from src.string_defs import data_strings
-from src.animator_functions import debug_info
+# from src.string_defs import data_strings
+# from src.animator_functions import debug_info
 
-offset = 0.3
+offset = 0.4
 beat = 0
 delay = 60.0 / 183.0 / 8.0  # Assuming 183 BPM, 8 beats per measure
 
@@ -26,30 +26,32 @@ event_4_time = 32
 
 controller = heat.SceneManager(all_scenes, (
     # buildup
-    heat.Event(0, heat.Event.swap_scene("clear")),
-    heat.Event(1, heat.Event.swap_scene("lyric_buildup_1")),
-    heat.Event(event_16_time * 1 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 1, heat.Event.swap_scene("lyric_buildup_2")),
-    heat.Event(event_16_time * 2 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 2, heat.Event.swap_scene("lyric_buildup_3")),
-    heat.Event(event_16_time * 3 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 3, heat.Event.swap_scene("lyric_buildup_4")),
-    heat.Event(event_16_time * 4 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(48, heat.Event.swap_scene("triangle")),
+
+    # heat.Event(48, heat.Event.swap_scene("clear")),
+    heat.Event(120, heat.Event.swap_scene("lyric_buildup_1")),
+    heat.Event(120 + event_16_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 1, heat.Event.swap_scene("lyric_buildup_2")),
+    heat.Event(120 + event_16_time * 2 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 2, heat.Event.swap_scene("lyric_buildup_3")),
+    heat.Event(120 + event_16_time * 3 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 3, heat.Event.swap_scene("lyric_buildup_4")),
+    heat.Event(120 + event_16_time * 4 - 1, heat.Event.swap_scene("clear")),
     
     # Climax 1
-    heat.Event(event_16_time * 4, heat.Event.swap_scene("lyric_climax_1")),
-    heat.Event(event_16_time * 5 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 5, heat.Event.swap_scene("lyric_repeat_1")),
-    heat.Event(event_16_time * 5 + event_12_time * 1 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 5 + event_12_time * 1, heat.Event.swap_scene("lyric_climax_2")),
-    heat.Event(event_16_time * 5 + event_12_time * 1 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 4, heat.Event.swap_scene("lyric_climax_1")),
+    heat.Event(120 + event_16_time * 5 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 5, heat.Event.swap_scene("lyric_repeat_1")),
+    heat.Event(120 + event_16_time * 5 + event_12_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 5 + event_12_time * 1, heat.Event.swap_scene("lyric_climax_2")),
+    heat.Event(120 + event_16_time * 5 + event_12_time * 1 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
 
     # Climax 2
-    heat.Event(event_16_time * 5 + event_12_time * 1 + event_4_time * 1, heat.Event.swap_scene("lyric_climax_3")),
-    heat.Event(event_16_time * 6 + event_12_time * 1 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 6 + event_12_time * 1 + event_4_time * 1, heat.Event.swap_scene("lyric_repeat_2")),
-    heat.Event(event_16_time * 6 + event_12_time * 2 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
-    heat.Event(event_16_time * 6 + event_12_time * 2 + event_4_time * 1, heat.Event.swap_scene("lyric_climax_4")),
+    heat.Event(120 + event_16_time * 5 + event_12_time * 1 + event_4_time * 1, heat.Event.swap_scene("lyric_climax_3")),
+    heat.Event(120 + event_16_time * 6 + event_12_time * 1 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 6 + event_12_time * 1 + event_4_time * 1, heat.Event.swap_scene("lyric_repeat_2")),
+    heat.Event(120 + event_16_time * 6 + event_12_time * 2 + event_4_time * 1 - 1, heat.Event.swap_scene("clear")),
+    heat.Event(120 + event_16_time * 6 + event_12_time * 2 + event_4_time * 1, heat.Event.swap_scene("lyric_climax_4")),
 ))
 
 while playback.active:
