@@ -1,6 +1,6 @@
 import random
 from colorama import Fore, Style
-from src.engine.dat import Vector2
+from engine.dat import Vector2
 
 def clear(c, layer):
     c.clear_layer(layer)
@@ -251,8 +251,6 @@ def debug_info(c, g, b, frames):
         ),
 
 
-def clear(c, layer):
-    c.clear_layer(layer)
 
 
 def typewrite_by_word(c, generator, layer, x, y, col, render=True, history_var="history"):

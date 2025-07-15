@@ -1,9 +1,9 @@
 import time
 from just_playback import Playback
-from src.animator_scenes import all_scenes, canvas
-import src.animator as heat
-# from src.string_defs import data_strings
-# from src.animator_functions import debug_info
+from animator_scenes import all_scenes, canvas
+import animator as heat
+# from string_defs import data_strings
+# from animator_functions import debug_info
 
 offset = 0.4
 beat = 0

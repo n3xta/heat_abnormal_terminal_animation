@@ -1,9 +1,10 @@
-import src.animator as am
-from src.animator_functions import set_multiline_string, debug_info, clear, noise, cluster_noise
-from src.engine.classes import Canvas
-from src.engine.dat import Vector2
+import animator as am
+from animator_functions import set_multiline_string, debug_info, clear, noise, cluster_noise
+from engine.classes import Canvas
+from engine.dat import Vector2
 from colorama import Fore, Style
-from src.string_defs import data_strings
+from string_defs import data_strings
+import random
 
 canvas = Canvas(Vector2(48,32), num_layers=1, merge_rules=())
 
